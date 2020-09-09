@@ -88,6 +88,22 @@ void cargar_cuenta(cuenta cuentas[],int &cant)
     return;
 }
 
+void estado_cuenta(cuenta cuentas[], int cant)
+{
+    int ID;
+    cout << "Ingrese el ID de la cuenta o el Nro de cliente" << endl;
+    cin >> ID;
+    for(int i=0; i<cant; i++)
+    {
+        if(cuentas[i].tarjetaid == ID || cuentas[i].nrocliente == ID)
+        {
+            cuentas[i].activa = false;
+        };
+    };
+    cout << "La cuenta de ID " << ID << " ha sido desactivada" << endl;
+    return;
+}
+
 int main()
 {
     int cant = cant_cuentas();
@@ -111,7 +127,7 @@ int main()
         cargar_cuenta(cuentas,cant);
       break;
       case '3':/*Desactivar una cuenta existente.*/
-        //estado_cuenta(cuentas,cant);
+        estado_cuenta(cuentas,cant);
       break;
       case '4':/*Buscar una cuenta por id.*/
         //id_search(cuentas,cant);
