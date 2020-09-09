@@ -48,7 +48,6 @@ void levantar(cuenta cuentas[])
   {
     cout<<"El archivo no puede ser encontrado o es inexistente.";
   }
-
     fclose(p1);
 
     return;
@@ -65,8 +64,28 @@ int cant_cuentas()
     {
         i++;
         fread(&x,sizeof(cuenta),1,p1);
-    }
+    };
     return i;
+}
+
+void cargar_cuenta(cuenta cuentas[],int &cant)
+{
+    FILE *p1;
+    cuenta c;
+    p1=fopen("cuentas.bic","ab");
+    cout << "Ingrese id tarjeta: " << endl;
+    cin >> c.tarjetaid;
+    cout << "Ingrese fecha de creacion" << endl;
+    cin >> c.fechadecreacion;
+    cout << "Ingrese saldo:" << endl;
+    cin >> c.saldo;
+    cout << "Ingrese numero de cliente" << endl;
+    cin >> c.nrocliente;
+    cant++;
+    cuentas[cant]=c;
+    fwrite(&c,sizeof(cuenta),1,p1);
+    fclose(p1);
+    return;
 }
 
 int main()
@@ -76,10 +95,10 @@ int main()
     int opcion;
     do
     {
-      menu();
+        menu();
     do
     {
-     opcion=getch();
+        opcion=getch();
 
     }while(opcion>='8');
 
@@ -89,7 +108,7 @@ int main()
         levantar(cuentas);
       break;
       case '2':/*cargar cuenta*/
-        // cargar_cuenta(cuentas,cant);
+        cargar_cuenta(cuentas,cant);
       break;
       case '3':/*Desactivar una cuenta existente.*/
         //estado_cuenta(cuentas,cant);
@@ -108,7 +127,6 @@ int main()
       break;
      }
     }while(opcion!=27);
-
 
     return 0;
   }
