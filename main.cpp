@@ -4,8 +4,9 @@
 
 using namespace std;
 
-struct cuenta{
-   long tarjetaid;
+struct cuenta
+{
+   int tarjetaid;
    int fechadecreacion;
    bool activa = true;
    float saldo;
@@ -15,7 +16,7 @@ struct cuenta{
 struct movimiento
 {
     int movimientoid;
-    long fechahora;
+    int fechahora;
     float monto;
     int cuentaid;
 };
@@ -85,22 +86,60 @@ void cargar_cuenta(cuenta cuentas[],int &cant)
     cuentas[cant]=c;
     fwrite(&c,sizeof(cuenta),1,p1);
     fclose(p1);
+
     return;
 }
 
 void estado_cuenta(cuenta cuentas[], int cant)
 {
+    FILE *archivo;
+    cuenta tarjeta;
     int ID;
+    int i = 0;
     cout << "Ingrese el ID de la cuenta o el Nro de cliente" << endl;
     cin >> ID;
-    for(int i=0; i<cant; i++)
+
+    archivo = fopen("cuentas.bic","rb+");
+    while(fread(&tarjeta,sizeof(cuenta),1,archivo))
     {
-        if(cuentas[i].tarjetaid == ID || cuentas[i].nrocliente == ID)
+        if(tarjeta.nrocliente == ID)
         {
+            tarjeta.activa = false;
             cuentas[i].activa = false;
+            cout << "Se ha desactivado la tarjeta " << tarjeta.tarjetaid << " del cliente Nro " << ID << endl;
+        } else if(tarjeta.tarjetaid == ID)
+        {
+            tarjeta.activa = false;
+            cuentas[i].activa = false;
+            cout << "La cuenta de ID " << ID << " ha sido desactivada." << endl;
+        } else
+        {
+            if(i >= cant)
+            {
+                cout << "Por favor, ingrese un ID o Nro de cliente valido." << endl;
+            }
         };
+        i++;
     };
-    cout << "La cuenta de ID " << ID << " ha sido desactivada" << endl;
+    fclose(archivo);
+    return;
+}
+
+void mostrarTarjetas(int cant)
+{
+    cuenta tarjeta;
+    cout << tarjeta.tarjetaid << endl;
+    FILE *lista;
+    lista = fopen("cuentas.bic","rb");
+    while(fread(&tarjeta,sizeof(cuenta),1,lista))
+    {
+        cout << "ID - " << tarjeta.tarjetaid << endl;
+        cout << "Nro de Cliente - " << tarjeta.nrocliente << endl;
+        cout << "Saldo - " << tarjeta.saldo << endl;
+        cout << "Fecha de Creacion - " << tarjeta.fechadecreacion << endl;
+        cout << "Estado - " << tarjeta.activa << endl;
+    };
+    fclose(lista);
     return;
 }
 
@@ -127,9 +166,11 @@ int main()
         cargar_cuenta(cuentas,cant);
       break;
       case '3':/*Desactivar una cuenta existente.*/
-        estado_cuenta(cuentas,cant);
+        estado_cuenta(cuentas, cant);
       break;
       case '4':/*Buscar una cuenta por id.*/
+          //mostrar tarjetas
+        mostrarTarjetas(cant);
         //id_search(cuentas,cant);
       break;
       case '5':/*Listar todas las cuentas activas por saldo*/
